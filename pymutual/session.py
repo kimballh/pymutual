@@ -4,7 +4,7 @@ import robobrowser
 import re
 
 from pymutual.constants import *
-from pymutual.models.profile import Profile
+from pymutual.models import Profile
 from pymutual.errors import *
 from werkzeug.exceptions import BadRequestKeyError
 
