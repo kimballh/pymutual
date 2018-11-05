@@ -60,7 +60,11 @@ class Session:
         if import_json:
             data = json.loads(import_json)
         else:
-            data = self._api.get_potential_matches(limit)
+            try:
+                data = self._api.get_potential_matches(limit)
+            except RequestError as e:
+                print(e)
+                return {}
 
         # get profile data from each dict and create Profile objects to return as array
         if return_dict:
@@ -87,8 +91,12 @@ class Session:
                 photo_urls.append(photo['url_hd'])
 
             # get bio
-            user_prompt_data = self._api.get_user_prompt(mutual_id)
-            if user_prompt_data and len(user_prompt_data) > 0:
+            try:
+                user_prompt_data = self._api.get_user_prompt(mutual_id)
+            except RequestError as e:
+                print(e)
+                user_prompt_data = None
+            if user_prompt_data is not None and len(user_prompt_data) > 0:
                 item = user_prompt_data[0]
                 prompt_id = item['prompt_id']
                 bio = item['text']
@@ -97,7 +105,11 @@ class Session:
                 bio = ''
 
             # get tags
-            tag_data = self._api.get_user_tags(mutual_id)
+            try:
+                tag_data = self._api.get_user_tags(mutual_id)
+            except RequestError as e:
+                tag_data = []
+                print(e)
             tags = []
             for item in tag_data:
                 tags.append(item['text'])
